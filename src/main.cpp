@@ -56,14 +56,14 @@ typedef struct {
 	GLuint g_Vao = 0; //vao
 	GLuint g_NumTriangles = 0; //  Numbre of triangles we are painting.
 
-}Tetera;
+}Obj;
 
-Tetera tetera;														//Declaracion de la variable global tetera, la podemos convertir en un vector si hay muchas teteras
+Obj obj[2];														//Declaracion de la variable global tetera, la podemos convertir en un vector si hay muchas teteras
 
 
 
 float x = 0, y = 0, z = -2;													//Definimos las coordenadas centro de la tetera
-
+int n = 0;
 
 
 // ------------------------------------------------------------------------------------------
@@ -89,14 +89,14 @@ void load()
 	//load the shader
 	Shader simpleShader("src/shader.vert", "src/shader.frag");
 
-	tetera.g_simpleShader = simpleShader.program;
+	obj[n].g_simpleShader = simpleShader.program;
 
 	// Create the VAO where we store all geometry (stored in g_Vao)
-	tetera.g_Vao = gl_createAndBindVAO();
+	obj[n].g_Vao = gl_createAndBindVAO();
 
 
 
-	gl_createAndBindAttribute(&(shapes[0].mesh.positions[0]), shapes[0].mesh.positions.size() * sizeof(float), tetera.g_simpleShader, "a_vertex", 3);
+	gl_createAndBindAttribute(&(shapes[0].mesh.positions[0]), shapes[0].mesh.positions.size() * sizeof(float), obj[n].g_simpleShader, "a_vertex", 3);
 
 	gl_createIndexBuffer(&(shapes[0].mesh.indices[0]), shapes[0].mesh.indices.size() * sizeof(unsigned int));
 
@@ -106,7 +106,7 @@ void load()
 
 	//store number of triangles (use in draw())
 	/////////////////////////////////////////g_NumTriangles = sizeof(indices) / (sizeof(GLuint) * 3);
-	tetera.g_NumTriangles = shapes[0].mesh.indices.size() / 3;
+	obj[n].g_NumTriangles = shapes[0].mesh.indices.size() / 3;
 }
 
 
@@ -123,22 +123,22 @@ void draw()
 	glClearColor(0.1, 0.2, 0.2, 1);													//cambiamos el color de fondo de nuestra ventana
 
 	// activate shader
-	glUseProgram(tetera.g_simpleShader);
-	GLuint colorLoc = glGetUniformLocation(tetera.g_simpleShader, "u_color");
+	glUseProgram(obj[n].g_simpleShader);
+	GLuint colorLoc = glGetUniformLocation(obj[n].g_simpleShader, "u_color");
 	glUniform3f(colorLoc, 1.0, 0.0, 0.0);
 
 
 
 	//bind the geometry
 	/////////////////////////////////////////////////gl_bindVAO(g_Vao);
-	glBindVertexArray(tetera.g_Vao);
+	glBindVertexArray(obj[n].g_Vao);
 
 	// Draw to screen
 
 
 
 	mat4 model = translate(mat4(1.0f), vec3(x, y, z));
-	GLuint model_loc = glGetUniformLocation(tetera.g_simpleShader, "u_model");
+	GLuint model_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_model");
 	glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
 
 
@@ -152,13 +152,13 @@ void draw()
 		0.1f, // near plane (distance from camera)
 		50.0f // Far plane (distance from camera)
 	);
-	GLuint projection_loc = glGetUniformLocation(tetera.g_simpleShader, "u_projection");
+	GLuint projection_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_projection");
 	glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection_matrix));
 
 
-	gl_bindVAO(tetera.g_Vao);
+	gl_bindVAO(obj[n].g_Vao);
 
-	glDrawElements(GL_TRIANGLES, 60 * tetera.g_NumTriangles, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, 60 * obj[n].g_NumTriangles, GL_UNSIGNED_INT, 0);
 
 }
 
@@ -174,11 +174,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	//reload
 	if (key == GLFW_KEY_R && action == GLFW_PRESS)
 		load();
-	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_D && action == GLFW_PRESS) {
 		x = x + 0.1;    
 	}
 	fflush(stdin);
-	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_A && action == GLFW_PRESS) {
 		x = x - 0.1;
 	}
 	fflush(stdin);
