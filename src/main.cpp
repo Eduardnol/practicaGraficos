@@ -135,7 +135,7 @@ void draw()
 
 	// Draw to screen
 
-
+	y = 0;
 
 	mat4 model = translate(mat4(1.0f), vec3(x, y, z));
 	GLuint model_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_model");
@@ -143,6 +143,20 @@ void draw()
 
 
 
+
+	glm::vec3 camPosition(0.f, 0.f, 1.f);
+	glm::vec3 WorldUp(0.f, 1.f, 0.f);
+	glm::vec3 camFront(0.f, 0.f, -1.f);
+	glm::mat4 view_matrix(1.f);
+
+	view_matrix = glm::lookAt(
+		camPosition,//eye, // the position of your camera, in world space
+		camPosition + camFront,//center, // where you want to look at, in world space
+		WorldUp//up // probably glm::vec3(0,1,0)
+	);
+	GLuint view_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_view");
+	glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view_matrix));
+	 
 
 	//Ahora mismo la camara y la tetera estan en 0,0,0, debemos mover la tetera en profundidad para poder verla al completo, el FOV no se debe tocar para evitar deofrmaciones
 	//create projection matrix and pass to shader
@@ -156,9 +170,15 @@ void draw()
 	glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection_matrix));
 
 
+
+
+
 	gl_bindVAO(obj[n].g_Vao);
 
 	glDrawElements(GL_TRIANGLES, 60 * obj[n].g_NumTriangles, GL_UNSIGNED_INT, 0);
+
+
+
 
 }
 
@@ -174,26 +194,26 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	//reload
 	if (key == GLFW_KEY_R && action == GLFW_PRESS)
 		load();
-	if (key == GLFW_KEY_D && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
 		x = x + 0.1;    
 	}
 	fflush(stdin);
-	if (key == GLFW_KEY_A && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
 		x = x - 0.1;
 	}
 	fflush(stdin);
-	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_UP && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
 		y = y + 0.1;
 	}
 	fflush(stdin);
-	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_DOWN && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
 		y = y - 0.1;
 	}
 	fflush(stdin);
-	if (key == GLFW_KEY_W && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
 		z = z - 0.2;
 	}
-	if (key == GLFW_KEY_S && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
 		z = z + 0.2;
 	}
 }
