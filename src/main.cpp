@@ -62,7 +62,7 @@ Obj obj[2];														//Declaracion de la variable global tetera, la podemos 
 
 
 
-float x = 0, y = 0, z = -2;													//Definimos las coordenadas centro de la tetera
+float x = 0, y = 0, z = 1;													//Definimos las coordenadas centro de la tetera
 int n = 0;
 
 
@@ -135,16 +135,16 @@ void draw()
 
 	// Draw to screen
 
-	y = 0;
 
-	mat4 model = translate(mat4(1.0f), vec3(x, y, z));
+
+	mat4 model = translate(mat4(1.0f), vec3(0, 0, 0));
 	GLuint model_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_model");
 	glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
 
+	//Para el movimiento de FPS vamos a usar las teclas WASD
 
 
-
-	glm::vec3 camPosition(0.f, 0.f, 1.f);
+	glm::vec3 camPosition(x, 0.f, z);
 	glm::vec3 WorldUp(0.f, 1.f, 0.f);
 	glm::vec3 camFront(0.f, 0.f, -1.f);
 	glm::mat4 view_matrix(1.f);
