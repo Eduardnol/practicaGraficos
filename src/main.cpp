@@ -259,6 +259,11 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     if (button == GLFW_MOUSE_BUTTON_LEFT) {
         cout << "Left mouse down at" << mouse_x << ", " << mouse_y << endl;
 
+
+
+
+
+
     }
 }
 
