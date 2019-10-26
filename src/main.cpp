@@ -23,14 +23,9 @@
 
 
 std::string basepath = "assets/";									//path donde estara el objeto que vamos a abrir partiendo de la base del proyecto
-std::string inputfile = basepath + "teapot_small.obj";				//Nombre del objeto que juntaremos con la path para pasarselo al compilador
-std::vector< tinyobj::shape_t >shapes;								//Clasificamos el archivo obj y colocamos en el vector sus shapes
-std::vector< tinyobj::material_t >materials;						//En este otro vector colocamos los materials
-
-std::string err;													//Nos devolvera error si lo hay en el fichero
+												//Nos devolvera error si lo hay en el fichero
 	
 
-bool ret = tinyobj::LoadObj(shapes, materials, err, inputfile.c_str(), basepath.c_str());
 
 
 
@@ -60,53 +55,73 @@ typedef struct {
 
 Obj obj[2];														//Declaracion de la variable global tetera, la podemos convertir en un vector si hay muchas teteras
 
-
-
-float x = 0, y = 0, z = -2;													//Definimos las coordenadas centro de la tetera
+										//Definimos las coordenadas del movimiento con el raton
+float x = 0, y = 0, z = 1;													//Definimos las coordenadas centro de la tetera
 int n = 0;
-
+float yaw1 = 0.0f, pitch1 = 0.0f, roll1 = 0.0f;
 
 // ------------------------------------------------------------------------------------------
 // This function manually creates a square geometry (defined in the array vertices[])
 // ------------------------------------------------------------------------------------------
 void load()
 {	
+	while(n <= 2){
+
+		string objeto;
+
+		if (n == 2) {
+			
+			objeto = "bunny.obj";
+		}
+		else {
+			objeto = "teapot_small.obj";
+		}
+
+		std::string inputfile = basepath + objeto;				//Nombre del objeto que juntaremos con la path para pasarselo al compilador
+		std::vector< tinyobj::shape_t >shapes;								//Clasificamos el archivo obj y colocamos en el vector sus shapes
+		std::vector< tinyobj::material_t >materials;						//En este otro vector colocamos los materials
+
+		std::string err;
+		//test it loaded correctly
+
+		bool ret = tinyobj::LoadObj(shapes, materials, err, inputfile.c_str(), basepath.c_str());
+
+		if (!err.empty()) {												//Comprueba si hay errores en la variable que hemos definido en la linea 30
+			std::cerr << err << endl;
+		}
+
+		//print out number of meshes described in file
+		std::cout << "# of shapes: " << shapes.size() << std::endl;
+
+		//**********************
+		// CODE TO LOAD EVERYTHING INTO MEMORY
+		//**********************
+
+		//load the shader
+		Shader simpleShader("src/shader.vert", "src/shader.frag");
+
+		obj[n].g_simpleShader = simpleShader.program;
+
+		// Create the VAO where we store all geometry (stored in g_Vao)
+		obj[n].g_Vao = gl_createAndBindVAO();
 
 
-	//test it loaded correctly
 
-	if (!err.empty()) {												//Comprueba si hay errores en la variable que hemos definido en la linea 30
-		std::cerr << err << endl;
+		gl_createAndBindAttribute(&(shapes[0].mesh.positions[0]), shapes[0].mesh.positions.size() * sizeof(float), obj[n].g_simpleShader, "a_vertex", 3);
+
+		gl_createIndexBuffer(&(shapes[0].mesh.indices[0]), shapes[0].mesh.indices.size() * sizeof(unsigned int));
+
+		//unbind everything
+		gl_unbindVAO();
+
+
+		//store number of triangles (use in draw())
+		/////////////////////////////////////////g_NumTriangles = sizeof(indices) / (sizeof(GLuint) * 3);
+		obj[n].g_NumTriangles = shapes[0].mesh.indices.size() / 3;
+
+		n++;
 	}
 
-	//print out number of meshes described in file
-	std::cout << "# of shapes: " << shapes.size() << std::endl;
-
- 	//**********************
-	// CODE TO LOAD EVERYTHING INTO MEMORY
-	//**********************
-
-	//load the shader
-	Shader simpleShader("src/shader.vert", "src/shader.frag");
-
-	obj[n].g_simpleShader = simpleShader.program;
-
-	// Create the VAO where we store all geometry (stored in g_Vao)
-	obj[n].g_Vao = gl_createAndBindVAO();
-
-
-
-	gl_createAndBindAttribute(&(shapes[0].mesh.positions[0]), shapes[0].mesh.positions.size() * sizeof(float), obj[n].g_simpleShader, "a_vertex", 3);
-
-	gl_createIndexBuffer(&(shapes[0].mesh.indices[0]), shapes[0].mesh.indices.size() * sizeof(unsigned int));
-
-	//unbind everything
-	gl_unbindVAO();
-
-
-	//store number of triangles (use in draw())
-	/////////////////////////////////////////g_NumTriangles = sizeof(indices) / (sizeof(GLuint) * 3);
-	obj[n].g_NumTriangles = shapes[0].mesh.indices.size() / 3;
 }
 
 
@@ -116,68 +131,87 @@ void load()
 // ------------------------------------------------------------------------------------------
 void draw()
 {
+	
+	int a = 0;
+	int b = 0;
+	int c = 0;
+	int n = 0;
+	int escala = 1;
 
-		
-	//clear the screen
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.1, 0.2, 0.2, 1);													//cambiamos el color de fondo de nuestra ventana
-
-	// activate shader
-	glUseProgram(obj[n].g_simpleShader);
-	GLuint colorLoc = glGetUniformLocation(obj[n].g_simpleShader, "u_color");
-	glUniform3f(colorLoc, 1.0, 0.0, 0.0);
-
-
-
-	//bind the geometry
-	/////////////////////////////////////////////////gl_bindVAO(g_Vao);
-	glBindVertexArray(obj[n].g_Vao);
-
-	// Draw to screen
-
-	y = 0;
-
-	mat4 model = translate(mat4(1.0f), vec3(x, y, z));
-	GLuint model_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_model");
-	glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
+		//clear the screen
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClearColor(0.1, 0.2, 0.2, 1);													//cambiamos el color de fondo de nuestra ventana
 
 
+	while (n <= 2) {
+		// activate shader
+		glUseProgram(obj[n].g_simpleShader);
+		GLuint colorLoc = glGetUniformLocation(obj[n].g_simpleShader, "u_color");
+		glUniform3f(colorLoc, 1.0, 0.0, 0.0);
 
+	
 
-	glm::vec3 camPosition(0.f, 0.f, 1.f);
-	glm::vec3 WorldUp(0.f, 1.f, 0.f);
-	glm::vec3 camFront(0.f, 0.f, -1.f);
-	glm::mat4 view_matrix(1.f);
+		//bind the geometry
+		/////////////////////////////////////////////////gl_bindVAO(g_Vao);
+		glBindVertexArray(obj[n].g_Vao);
 
-	view_matrix = glm::lookAt(
-		camPosition,//eye, // the position of your camera, in world space
-		camPosition + camFront,//center, // where you want to look at, in world space
-		WorldUp//up // probably glm::vec3(0,1,0)
-	);
-	GLuint view_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_view");
-	glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view_matrix));
-	 
-
-	//Ahora mismo la camara y la tetera estan en 0,0,0, debemos mover la tetera en profundidad para poder verla al completo, el FOV no se debe tocar para evitar deofrmaciones
-	//create projection matrix and pass to shader
-	mat4 projection_matrix = perspective(
-		65.0f, // Field of view
-		1.0f, // Aspect ratio
-		0.1f, // near plane (distance from camera)
-		50.0f // Far plane (distance from camera)
-	);
-	GLuint projection_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_projection");
-	glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection_matrix));
+		// Draw to screen
 
 
 
+		mat4 model = translate(mat4(1.0f), vec3(a, b, c));
+		GLuint model_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_model");
+		glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
+
+		//Para el movimiento de FPS vamos a usar las teclas WASD
 
 
-	gl_bindVAO(obj[n].g_Vao);
+		glm::vec3 camPosition(x, 0.f, z);
+		glm::vec3 WorldUp(0.f, 1.f, 0.f);
+		glm::vec3 camFront(0.f, 0.f, -1.f);
+		glm::mat4 view_matrix(1.f);
 
-	glDrawElements(GL_TRIANGLES, 60 * obj[n].g_NumTriangles, GL_UNSIGNED_INT, 0);
+		view_matrix = glm::lookAt(
+			camPosition,//eye, // the position of your camera, in world space
+			camPosition + camFront,// where you want to look at, in world space
+			WorldUp//up // probably glm::vec3(0,1,0)
+		);
+		GLuint view_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_view");
+
+		glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view_matrix));
 
 
+		//Ahora mismo la camara y la tetera estan en 0,0,0, debemos mover la tetera en profundidad para poder verla al completo, el FOV no se debe tocar para evitar deofrmaciones
+		//create projection matrix and pass to shader
+		mat4 projection_matrix = perspective(
+			65.0f, // Field of view
+			1.0f, // Aspect ratio
+			0.1f, // near plane (distance from camera)
+			50.0f // Far plane (distance from camera)
+		);
+		GLuint projection_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_projection");
+		glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection_matrix));
+
+
+
+
+
+		gl_bindVAO(obj[n].g_Vao);
+
+		glDrawElements(GL_TRIANGLES, 60 * obj[n].g_NumTriangles, GL_UNSIGNED_INT, 0);
+
+
+
+		a++;
+		b++;
+		c++;
+		n++;
+
+		if (n == 2) {
+			a = 0;
+			b = 1;
+		}
+}
 
 
 }
@@ -201,14 +235,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
 		x = x - 0.1;
 	}
-	fflush(stdin);
-	if (key == GLFW_KEY_UP && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-		y = y + 0.1;
-	}
-	fflush(stdin);
-	if (key == GLFW_KEY_DOWN && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-		y = y - 0.1;
-	}
+	//fflush(stdin);
+	//if (key == GLFW_KEY_UP && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+	//	y = y + 0.1;
+	//}
+	//fflush(stdin);
+	//if (key == GLFW_KEY_DOWN && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+	//	y = y - 0.1;
+	//}
 	fflush(stdin);
 	if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
 		z = z - 0.2;
