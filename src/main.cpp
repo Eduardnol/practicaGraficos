@@ -23,14 +23,9 @@
 
 
 std::string basepath = "assets/";									//path donde estara el objeto que vamos a abrir partiendo de la base del proyecto
-std::string inputfile = basepath + "teapot_small.obj";				//Nombre del objeto que juntaremos con la path para pasarselo al compilador
-std::vector< tinyobj::shape_t >shapes;								//Clasificamos el archivo obj y colocamos en el vector sus shapes
-std::vector< tinyobj::material_t >materials;						//En este otro vector colocamos los materials
-
-std::string err;													//Nos devolvera error si lo hay en el fichero
+												//Nos devolvera error si lo hay en el fichero
 	
 
-bool ret = tinyobj::LoadObj(shapes, materials, err, inputfile.c_str(), basepath.c_str());
 
 
 
@@ -60,11 +55,10 @@ typedef struct {
 
 Obj obj[2];														//Declaracion de la variable global tetera, la podemos convertir en un vector si hay muchas teteras
 
-
-
+										//Definimos las coordenadas del movimiento con el raton
 float x = 0, y = 0, z = 1;													//Definimos las coordenadas centro de la tetera
 int n = 0;
-
+float yaw1 = 0.0f, pitch1 = 0.0f, roll1 = 0.0f;
 
 // ------------------------------------------------------------------------------------------
 // This function manually creates a square geometry (defined in the array vertices[])
@@ -73,7 +67,24 @@ void load()
 {	
 	while(n <= 2){
 
+		string objeto;
+
+		if (n == 2) {
+			
+			objeto = "bunny.obj";
+		}
+		else {
+			objeto = "teapot_small.obj";
+		}
+
+		std::string inputfile = basepath + objeto;				//Nombre del objeto que juntaremos con la path para pasarselo al compilador
+		std::vector< tinyobj::shape_t >shapes;								//Clasificamos el archivo obj y colocamos en el vector sus shapes
+		std::vector< tinyobj::material_t >materials;						//En este otro vector colocamos los materials
+
+		std::string err;
 		//test it loaded correctly
+
+		bool ret = tinyobj::LoadObj(shapes, materials, err, inputfile.c_str(), basepath.c_str());
 
 		if (!err.empty()) {												//Comprueba si hay errores en la variable que hemos definido en la linea 30
 			std::cerr << err << endl;
@@ -120,12 +131,12 @@ void load()
 // ------------------------------------------------------------------------------------------
 void draw()
 {
-
+	
 	int a = 0;
 	int b = 0;
 	int c = 0;
 	int n = 0;
-	
+	int escala = 1;
 
 		//clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -162,10 +173,11 @@ void draw()
 
 		view_matrix = glm::lookAt(
 			camPosition,//eye, // the position of your camera, in world space
-			camPosition + camFront,//center, // where you want to look at, in world space
+			camPosition + camFront,// where you want to look at, in world space
 			WorldUp//up // probably glm::vec3(0,1,0)
 		);
 		GLuint view_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_view");
+
 		glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view_matrix));
 
 
@@ -188,10 +200,17 @@ void draw()
 
 		glDrawElements(GL_TRIANGLES, 60 * obj[n].g_NumTriangles, GL_UNSIGNED_INT, 0);
 
+
+
 		a++;
 		b++;
 		c++;
 		n++;
+
+		if (n == 2) {
+			a = 0;
+			b = 1;
+		}
 }
 
 
@@ -216,14 +235,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
 		x = x - 0.1;
 	}
-	fflush(stdin);
-	if (key == GLFW_KEY_UP && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-		y = y + 0.1;
-	}
-	fflush(stdin);
-	if (key == GLFW_KEY_DOWN && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-		y = y - 0.1;
-	}
+	//fflush(stdin);
+	//if (key == GLFW_KEY_UP && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+	//	y = y + 0.1;
+	//}
+	//fflush(stdin);
+	//if (key == GLFW_KEY_DOWN && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+	//	y = y - 0.1;
+	//}
 	fflush(stdin);
 	if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
 		z = z - 0.2;
