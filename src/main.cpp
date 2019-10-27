@@ -56,9 +56,12 @@ typedef struct {
 Obj obj[2];														//Declaracion de la variable global tetera, la podemos convertir en un vector si hay muchas teteras
 
 										//Definimos las coordenadas del movimiento con el raton
-float x = 0, y = 0, z = 1;													//Definimos las coordenadas centro de la tetera
+float x = 0, z = 1;													//Definimos las coordenadas centro de la tetera
 int n = 0;
-float yaw1 = 0.0f, pitch1 = 0.0f, roll1 = 0.0f;
+float y = 0, p = 0, r;
+float inicio_x, inicio_y, final_x, final_y;
+
+
 
 // ------------------------------------------------------------------------------------------
 // This function manually creates a square geometry (defined in the array vertices[])
@@ -126,6 +129,24 @@ void load()
 
 
 
+
+//Dibujar una red
+void Draw_Grid()
+{
+
+	for (float i = -500; i <= 500; i += 5)
+	{
+		glBegin(GL_LINES);
+		glColor3ub(150, 190, 150);
+		glVertex3f(-500, 0, i);
+		glVertex3f(500, 0, i);
+		glVertex3f(i, 0, -500);
+		glVertex3f(i, 0, 500);
+		glEnd();
+	}
+}
+
+
 // ------------------------------------------------------------------------------------------
 // This function actually draws to screen and called non-stop, in a loop
 // ------------------------------------------------------------------------------------------
@@ -141,9 +162,12 @@ void draw()
 		//clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.1, 0.2, 0.2, 1);													//cambiamos el color de fondo de nuestra ventana
-
+		
 
 	while (n <= 2) {
+
+	
+
 		// activate shader
 		glUseProgram(obj[n].g_simpleShader);
 		GLuint colorLoc = glGetUniformLocation(obj[n].g_simpleShader, "u_color");
@@ -168,7 +192,7 @@ void draw()
 
 		glm::vec3 camPosition(x, 0.f, z);
 		glm::vec3 WorldUp(0.f, 1.f, 0.f);
-		glm::vec3 camFront(0.f, 0.f, -1.f);
+		glm::vec3 camFront(y, p, -1.f);
 		glm::mat4 view_matrix(1.f);
 
 		view_matrix = glm::lookAt(
@@ -176,6 +200,7 @@ void draw()
 			camPosition + camFront,// where you want to look at, in world space
 			WorldUp//up // probably glm::vec3(0,1,0)
 		);
+		Draw_Grid();
 		GLuint view_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_view");
 
 		glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view_matrix));
@@ -255,17 +280,34 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 // ------------------------------------------------------------------------------------------
 // This function is called every time you click the mouse
 // ------------------------------------------------------------------------------------------
+
+
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-    if (button == GLFW_MOUSE_BUTTON_LEFT) {
-        cout << "Left mouse down at" << mouse_x << ", " << mouse_y << endl;
+	float angle_y = 0.0f;
+	float angle_z = 0.0f;
+	int mid_x = 250;
+	int mid_y = 250;
 
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 
+		//mose_x, mouse_y
+		cout << "Left mouse down at" << mouse_x << ", " << mouse_y << endl;
 
+		angle_y = (float)(mid_x - mouse_x) / 1000;
+		angle_z = (float)(mid_y - mouse_y) / 1000;
 
+		//El valor sera la velocidad con la que la camara se mueve alrededor
+		y += angle_z * 2;
 
+		glm::vec3 camPosition(x, 0.f, z);
+		glm::vec3 WorldUp(0.f, 1.f, 0.f);
+		glm::vec3 camFront(y, p, -1.f);
 
-    }
+		glm::vec3 viewVector = camFront - camPosition;
+	}
+
 }
+
 
 
 int main(void)
@@ -286,6 +328,7 @@ int main(void)
 	glewInit();
 
 	//input callbacks
+	
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
