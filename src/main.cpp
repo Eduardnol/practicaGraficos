@@ -288,9 +288,10 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	int mid_x = 250;
 	int mid_y = 250;
 
-	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+
 
 		//mose_x, mouse_y
+		glfwGetCursorPos(window, &mouse_x, &mouse_y);
 		cout << "Left mouse down at" << mouse_x << ", " << mouse_y << endl;
 
 		angle_y = (float)(mid_x - mouse_x) / 1000;
@@ -304,7 +305,6 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 		glm::vec3 camFront(y, p, -1.f);
 
 		glm::vec3 viewVector = camFront - camPosition;
-	}
 
 }
 
