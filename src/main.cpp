@@ -20,7 +20,7 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
-
+#define SPEED 0.03f
 
 std::string basepath = "assets/";									//path donde estara el objeto que vamos a abrir partiendo de la base del proyecto
 												//Nos devolvera error si lo hay en el fichero
@@ -366,20 +366,22 @@ void movimientoRaton(GLFWwindow* window) {
 
 
 
-		//limitar la rotacion
+		//limitar la rotacion en el eje x
 		if ((p - y_camara) > 8) p = y_camara + 8;
 		if ((p - y_camara) <-8) p = y_camara - 8;
 
 
 
-		glm::vec3 camPosition_1(x, 0.f, z);
-		glm::vec3 camFront_1(y, p, -1.f);
+		glm::vec3 camPosition_1(x, y_camara, z);
+		glm::vec3 camFront_1(y, p, r);
 
 		glm::vec3 viewVector = camFront_1 - camPosition_1;
 
-		r = (float)(z + 0.017452 * viewVector.x + 0.999847 * viewVector.z); //sen(1) = 0.017452  //cos(1) = 0.999847
-		y = (float)(x + 0.999847 * viewVector.x - 0.017452 * viewVector.z);
 
+		r = (float)(z + sin(-angle_y) * viewVector.x + cos(-angle_y) * viewVector.z);
+		y = (float)(x + cos(-angle_y) * viewVector.x - sin(-angle_y) * viewVector.z);
+
+		
 }
 
 
