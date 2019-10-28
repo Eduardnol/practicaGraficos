@@ -58,7 +58,7 @@ Obj obj[2];														//Declaracion de la variable global tetera, la podemos 
 										//Definimos las coordenadas del movimiento con el raton
 float x = 0, z = 1;													//Definimos las coordenadas centro de la tetera
 int n = 0;
-float y = 0, p = 0, r;
+float y = 0, p = 0, r = -1 , y_camara = 1;
 float inicio_x, inicio_y, final_x, final_y;
 
 
@@ -131,81 +131,60 @@ void load()
 
 
 //Dibujar una red
-void Draw_Grid()
-{
+void drawGrid() {
 
-	for (float i = -500; i <= 500; i += 5)
-	{
+	int i;
+	for (i = 0; i < 40; i++) {
+
+		glPushMatrix();
+
+		if (i < 20) {
+
+			glTranslatef(0, 0, i);
+
+		}
+
+		if (i >= 20) {
+
+			glTranslatef(i - 20, 0, 0);
+			glRotatef(-90, 0, 1, 0);
+
+		}
+
 		glBegin(GL_LINES);
-		glColor3ub(150, 190, 150);
-		glVertex3f(-500, 1, i);
-		glVertex3f(500, 1, i);
-		glVertex3f(i, 1, -500);
-		glVertex3f(i, 1, 500);
+		glColor3f(1, 1, 1);
+		glLineWidth(100);
+		glVertex3f(0, -0.1, 0);
+		glVertex3f(19, -0.1, 0);
 		glEnd();
-
+		glPopMatrix();
 	}
 
 }
 
-void drawGrid()
-{
-	const float size = 1.0f;
-	const float size2 = size / 2.0f;
-
-	glDisable(GL_LIGHTING);
-
-	for (float i = -5; i <= 5; i += size)
-		for (float j = -5; j <= 5; j += size)
-		{
-			glBegin(GL_QUADS);
-			if (int(i + j) % 2)
-				glColor3f(1.0f, 1.0f, 1.0f);
-			else
-				glColor3f(0.0f, 0.0f, 0.0f);
-
-			glVertex3f(-size2 + i, 0.0f, -size2 + j);
-			glVertex3f(size2 + i, 0.0f, -size2 + j);
-			glVertex3f(size2 + i, 0.0f, size2 + j);
-			glVertex3f(-size2 + i, 0.0f, size2 + j);
-			glEnd();
-		}
-
-	glEnable(GL_LIGHTING);
-}
+void drawObjects() {
 
 
-
-
-
-// ------------------------------------------------------------------------------------------
-// This function actually draws to screen and called non-stop, in a loop
-// ------------------------------------------------------------------------------------------
-void draw()
-{
-	
 	int a = 0;
 	int b = 0;
 	int c = 0;
 	int n = 0;
 	int escala = 1;
 
-		//clear the screen
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		//glClearColor(0.1, 0.2, 0.2, 1);													//cambiamos el color de fondo de nuestra ventana
-		
-
 	while (n <= 2) {
 
 		drawGrid();
 
 		// activate shader
+
+		/*--------------------------------------------------------
+			PARA HACER APARECER LA TETERA
+		--------------------------------------------------------*/
 		glUseProgram(obj[n].g_simpleShader);
 		GLuint colorLoc = glGetUniformLocation(obj[n].g_simpleShader, "u_color");
 		glUniform3f(colorLoc, 1.0, 0.0, 0.0);
 
-	
+
 
 		//bind the geometry
 		/////////////////////////////////////////////////gl_bindVAO(g_Vao);
@@ -215,6 +194,9 @@ void draw()
 
 
 
+		/*--------------------------------------------------------
+			PARA la perspectiva de lejania
+		--------------------------------------------------------*/
 		mat4 model = translate(mat4(1.0f), vec3(a, b, c));
 		GLuint model_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_model");
 		glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
@@ -222,14 +204,19 @@ void draw()
 		//Para el movimiento de FPS vamos a usar las teclas WASD
 
 
-		glm::vec3 camPosition(x, 0.f, z);
+
+		/*--------------------------------------------------------
+			PARA EL MOVIMIENTO DE LA CAMARA
+		--------------------------------------------------------*/
+
+		glm::vec3 camPosition(x, y_camara, z);
 		glm::vec3 WorldUp(0.f, 1.f, 0.f);
-		glm::vec3 camFront(y, p, -1.f);
+		glm::vec3 camFront(y, p, r);
 		glm::mat4 view_matrix(1.f);
 
 		view_matrix = glm::lookAt(
 			camPosition,//eye, // the position of your camera, in world space
-			camPosition + camFront,// where you want to look at, in world space
+			camFront,// where you want to look at, in world space
 			WorldUp//up // probably glm::vec3(0,1,0)
 		);
 
@@ -259,16 +246,45 @@ void draw()
 
 
 
-		a++;
-		b++;
-		c++;
+		a += 2;
+		b += 2;
+		c += 2;
 		n++;
 
 		if (n == 2) {
 			a = 0;
 			b = 1;
 		}
+	}
 }
+
+
+
+
+// ------------------------------------------------------------------------------------------
+// This function actually draws to screen and called non-stop, in a loop
+// ------------------------------------------------------------------------------------------
+void draw(GLFWwindow* window)
+{
+	
+
+		//clear the screen
+	 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	 glLoadIdentity();
+	 glTranslatef(-13, 0, -45);
+	 glRotatef(40, 1, 1, 0);
+
+	 drawGrid();
+	 drawObjects();
+
+	 // Swap front and back buffers
+	 glfwSwapBuffers(window);
+	 //glutSwapBuffers();
+		
+
+
+		//glClearColor(0.1, 0.2, 0.2, 1);													//cambiamos el color de fondo de nuestra ventana
+	
 
 
 }
@@ -283,8 +299,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, 1);
 	//reload
-	if (key == GLFW_KEY_R && action == GLFW_PRESS)
+	if (key == GLFW_KEY_R && action == GLFW_PRESS) {
 		load();
+
+		x = 0; z = 1;													//Definimos las coordenadas centro de la tetera
+		y = 0; p = 0;
+	}
+
+
 	if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
 		x = x + 0.1;    
 	}
@@ -317,11 +339,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void movimientoRaton(GLFWwindow* window) {
 	float angle_y = 0.0f;
 	float angle_z = 0.0f;
-	int mid_x = g_ViewportWidth >> 1;
-	int mid_y = g_ViewportHeight >> 1;
+	int mid_x = 0;
+	int mid_y = 0;
 	int width, height;
 
-
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwGetWindowSize(window, &width, &height);
+		mid_x = width/2;
+		mid_y = height/2;
 
 		//mose_x, mouse_y
 		glfwGetCursorPos(window, &mouse_x, &mouse_y);
@@ -329,34 +354,31 @@ void movimientoRaton(GLFWwindow* window) {
 
 		if ((mouse_x == mid_x) && (mouse_y == mid_y)) return;
 
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		
+		glfwSetCursorPos(window, width / 2, height / 2);
 
 		angle_y = (float)(mid_x - mouse_x) / 1000;
 		angle_z = (float)(mid_y - mouse_y) / 1000;
 
 		//El valor sera la velocidad con la que la camara se mueve alrededor
 		p += angle_z * 2;
-		y -= angle_y * 2;
-
-		glfwGetWindowSize(window, &width, &height);
-		glfwSetCursorPos(window, width / 2, height / 2);
+		
 
 
 
 		//limitar la rotacion
-		if ((p - 0) > 8)  p = 0 + 8;
-		if ((p - 0) < -8) p = 0 - 8;
+		if ((p - y_camara) > 8) p = y_camara + 8;
+		if ((p - y_camara) <-8) p = y_camara - 8;
 
 
 
-		//glm::vec3 camPosition(x, 0.f, z);
-		//glm::vec3 WorldUp(0.f, 1.f, 0.f);
-		//glm::vec3 camFront(y, p, -1.f);
+		glm::vec3 camPosition_1(x, 0.f, z);
+		glm::vec3 camFront_1(y, p, -1.f);
 
-		//glm::vec3 viewVector = camFront - camPosition;
+		glm::vec3 viewVector = camFront_1 - camPosition_1;
 
-		//p = (float)(z + 0.017452 * viewVector.x + 0.999847 * viewVector.z); //sen(1) = 0.017452  //cos(1) = 0.999847
-		//y = (float)(x + 0.999847 * viewVector.x - 0.017452 * viewVector.z);
+		r = (float)(z + 0.017452 * viewVector.x + 0.999847 * viewVector.z); //sen(1) = 0.017452  //cos(1) = 0.999847
+		y = (float)(x + 0.999847 * viewVector.x - 0.017452 * viewVector.z);
 
 }
 
@@ -395,11 +417,11 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
 		
-		draw();
+		draw(window);
 		movimientoRaton(window);
         
         // Swap front and back buffers
-        glfwSwapBuffers(window);
+       // glfwSwapBuffers(window);
         
         // Poll for and process events
         glfwPollEvents();
