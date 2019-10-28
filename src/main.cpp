@@ -12,7 +12,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
+#include <math.h>
 
 
 //include the tiny object loader
@@ -138,13 +138,44 @@ void Draw_Grid()
 	{
 		glBegin(GL_LINES);
 		glColor3ub(150, 190, 150);
-		glVertex3f(-500, 0, i);
-		glVertex3f(500, 0, i);
-		glVertex3f(i, 0, -500);
-		glVertex3f(i, 0, 500);
+		glVertex3f(-500, 1, i);
+		glVertex3f(500, 1, i);
+		glVertex3f(i, 1, -500);
+		glVertex3f(i, 1, 500);
 		glEnd();
+
 	}
+
 }
+
+void drawGrid()
+{
+	const float size = 1.0f;
+	const float size2 = size / 2.0f;
+
+	glDisable(GL_LIGHTING);
+
+	for (float i = -5; i <= 5; i += size)
+		for (float j = -5; j <= 5; j += size)
+		{
+			glBegin(GL_QUADS);
+			if (int(i + j) % 2)
+				glColor3f(1.0f, 1.0f, 1.0f);
+			else
+				glColor3f(0.0f, 0.0f, 0.0f);
+
+			glVertex3f(-size2 + i, 0.0f, -size2 + j);
+			glVertex3f(size2 + i, 0.0f, -size2 + j);
+			glVertex3f(size2 + i, 0.0f, size2 + j);
+			glVertex3f(-size2 + i, 0.0f, size2 + j);
+			glEnd();
+		}
+
+	glEnable(GL_LIGHTING);
+}
+
+
+
 
 
 // ------------------------------------------------------------------------------------------
@@ -161,12 +192,13 @@ void draw()
 
 		//clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0.1, 0.2, 0.2, 1);													//cambiamos el color de fondo de nuestra ventana
+		
+		//glClearColor(0.1, 0.2, 0.2, 1);													//cambiamos el color de fondo de nuestra ventana
 		
 
 	while (n <= 2) {
 
-	
+		drawGrid();
 
 		// activate shader
 		glUseProgram(obj[n].g_simpleShader);
@@ -200,7 +232,7 @@ void draw()
 			camPosition + camFront,// where you want to look at, in world space
 			WorldUp//up // probably glm::vec3(0,1,0)
 		);
-		Draw_Grid();
+
 		GLuint view_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_view");
 
 		glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view_matrix));
@@ -282,11 +314,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 // ------------------------------------------------------------------------------------------
 
 
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+void movimientoRaton(GLFWwindow* window) {
 	float angle_y = 0.0f;
 	float angle_z = 0.0f;
-	int mid_x = 250;
-	int mid_y = 250;
+	int mid_x = g_ViewportWidth >> 1;
+	int mid_y = g_ViewportHeight >> 1;
+	int width, height;
 
 
 
@@ -294,17 +327,36 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 		glfwGetCursorPos(window, &mouse_x, &mouse_y);
 		cout << "Left mouse down at" << mouse_x << ", " << mouse_y << endl;
 
+		if ((mouse_x == mid_x) && (mouse_y == mid_y)) return;
+
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 		angle_y = (float)(mid_x - mouse_x) / 1000;
 		angle_z = (float)(mid_y - mouse_y) / 1000;
 
 		//El valor sera la velocidad con la que la camara se mueve alrededor
-		y += angle_z * 2;
+		p += angle_z * 2;
+		y -= angle_y * 2;
 
-		glm::vec3 camPosition(x, 0.f, z);
-		glm::vec3 WorldUp(0.f, 1.f, 0.f);
-		glm::vec3 camFront(y, p, -1.f);
+		glfwGetWindowSize(window, &width, &height);
+		glfwSetCursorPos(window, width / 2, height / 2);
 
-		glm::vec3 viewVector = camFront - camPosition;
+
+
+		//limitar la rotacion
+		if ((p - 0) > 8)  p = 0 + 8;
+		if ((p - 0) < -8) p = 0 - 8;
+
+
+
+		//glm::vec3 camPosition(x, 0.f, z);
+		//glm::vec3 WorldUp(0.f, 1.f, 0.f);
+		//glm::vec3 camFront(y, p, -1.f);
+
+		//glm::vec3 viewVector = camFront - camPosition;
+
+		//p = (float)(z + 0.017452 * viewVector.x + 0.999847 * viewVector.z); //sen(1) = 0.017452  //cos(1) = 0.999847
+		//y = (float)(x + 0.999847 * viewVector.x - 0.017452 * viewVector.z);
 
 }
 
@@ -325,13 +377,16 @@ int main(void)
 	if (!window) {glfwTerminate();	return -1;}
 	glfwMakeContextCurrent(window);
 	glewExperimental = GL_TRUE;
+
 	glewInit();
 
 	//input callbacks
 	
 	glfwSetKeyCallback(window, key_callback);
-	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	
 
 	//load all the resources
 	load();
@@ -339,7 +394,9 @@ int main(void)
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window))
     {
+		
 		draw();
+		movimientoRaton(window);
         
         // Swap front and back buffers
         glfwSwapBuffers(window);
