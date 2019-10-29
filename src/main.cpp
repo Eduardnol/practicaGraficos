@@ -289,6 +289,36 @@ void draw(GLFWwindow* window)
 
 }
 
+
+
+/*
+MOVIMIENTO DE AVANZAR Y RETROCEDER CAMARA
+*/
+
+
+
+void Move_Camera(float speed)
+{
+	glm::vec3 camPosition(x, y_camara, z);
+	glm::vec3 camFront(y, p, r);
+	glm::vec3 vVector = camFront - camPosition;	// Get the view vector
+
+
+
+	// forward positive cameraspeed and backward negative -cameraspeed.
+	x = x + vVector.x * speed;
+	z = z + vVector.z * speed;
+	y = y + vVector.x * speed;
+	r = r + vVector.z * speed;
+}
+
+
+
+
+
+
+
+
 // ------------------------------------------------------------------------------------------
 // This function is called every time you press a screen
 // Se encargara de de detectar si se presiona alguna tecla de forma que se mueva la tetera para donde toque
@@ -324,10 +354,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	//}
 	fflush(stdin);
 	if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-		z = z - 0.2;
+		Move_Camera(SPEED);
 	}
 	if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-		z = z + 0.2;
+		Move_Camera(-SPEED);
 	}
 }
 
@@ -344,7 +374,7 @@ void movimientoRaton(GLFWwindow* window) {
 	int width, height;
 
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		glfwGetWindowSize(window, &width, &height);
+		glfwGetWindowSize(window, &width, &height);//Obtiene el tamano en pixeles de la ventana
 		mid_x = width/2;
 		mid_y = height/2;
 

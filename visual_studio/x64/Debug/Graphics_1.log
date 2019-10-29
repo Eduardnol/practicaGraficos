@@ -6,9 +6,10 @@ D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(143,23): warnin
 D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(149,19): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
 D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(157,24): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
 D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(158,25): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(311,9): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(315,9): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(327,9): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(330,9): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(330,9): warning C4244: GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(341,9): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(345,9): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(345,9): warning C4244: GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+LINK : warning LNK4098: la biblioteca predeterminada'MSVCRT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
+Shader.obj : warning LNK4099: no se encontr¾ PDB 'vc142.pdb' con 'Shader.obj' o en 'D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\vc142.pdb'; se vincularß el objeto sin tener en cuenta informaci¾n de depuraci¾n
+glfunctions.obj : warning LNK4099: no se encontr¾ PDB 'vc142.pdb' con 'glfunctions.obj' o en 'D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\vc142.pdb'; se vincularß el objeto sin tener en cuenta informaci¾n de depuraci¾n
   Graphics_1.vcxproj -> D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\visual_studio\..\Graphics_1.exe
