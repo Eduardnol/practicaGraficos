@@ -271,8 +271,11 @@ void draw(GLFWwindow* window)
 		//clear the screen
 	 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	 glLoadIdentity();
-	 glTranslatef(-13, 0, -45);
-	 glRotatef(40, 1, 1, 0);
+	 //glTranslatef(-13, 0, -45);
+	 //glRotatef(40, 1, 1, 0);
+	 glClearColor(0.1, 0.2, 0.2, 1);													//cambiamos el color de fondo de nuestra ventana
+
+
 
 	 drawGrid();
 	 drawObjects();
@@ -283,7 +286,6 @@ void draw(GLFWwindow* window)
 		
 
 
-		//glClearColor(0.1, 0.2, 0.2, 1);													//cambiamos el color de fondo de nuestra ventana
 	
 
 
@@ -312,6 +314,29 @@ void Move_Camera(float speed)
 	r = r + vVector.z * speed;
 }
 
+void Strafe_Camera(float speed) {
+
+	glm::vec3 camPosition_1(x, y_camara, z);
+	glm::vec3 camFront_1(y, p, r);
+
+
+
+	glm::vec3 viewVector = camFront_1 - camPosition_1;
+	glm::vec3 ortogVector;
+
+
+	ortogVector.x = -viewVector.z;
+	ortogVector.z = viewVector.x;
+
+
+
+	x = x + ortogVector.x * speed;
+	z = z + ortogVector.z * speed;
+	y = y + ortogVector.x * speed;
+	r = r + ortogVector.z * speed;
+
+}
+
 
 
 
@@ -332,26 +357,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_R && action == GLFW_PRESS) {
 		load();
 
-		x = 0; z = 1;													//Definimos las coordenadas centro de la tetera
-		y = 0; p = 0;
+
+		x = 0; z = 1; y_camara = 1;													//Definimos las coordenadas centro de la tetera
+		y = 0; p = 0; r = -1;
 	}
 
 
 	if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-		x = x + 0.1;    
+		Strafe_Camera(SPEED);
 	}
 	fflush(stdin);
 	if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-		x = x - 0.1;
+		Strafe_Camera(-SPEED);
 	}
-	//fflush(stdin);
-	//if (key == GLFW_KEY_UP && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-	//	y = y + 0.1;
-	//}
-	//fflush(stdin);
-	//if (key == GLFW_KEY_DOWN && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-	//	y = y - 0.1;
-	//}
 	fflush(stdin);
 	if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
 		Move_Camera(SPEED);
@@ -436,11 +454,11 @@ int main(void)
 
 	//input callbacks
 	
-	glfwSetKeyCallback(window, key_callback);
+
 	
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	
+
 
 	//load all the resources
 	load();
@@ -450,7 +468,10 @@ int main(void)
     {
 		
 		draw(window);
+		glfwSetKeyCallback(window, key_callback);
 		movimientoRaton(window);
+		
+
         
         // Swap front and back buffers
        // glfwSwapBuffers(window);
