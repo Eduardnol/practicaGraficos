@@ -38,7 +38,7 @@ using namespace std;
 using namespace glm;
 
 //global variables to help us do things
-int g_ViewportWidth = 512; int g_ViewportHeight = 512;				// Default window size, in pixels
+int g_ViewportWidth = 512; int g_ViewportHeight = 512;		// Default window size, in pixels
 double mouse_x, mouse_y;											//variables storing mouse position
 const vec3 g_backgroundColor(0.2f, 0.2f, 0.2f);						// background colour - a GLM 3-component vector
 
@@ -129,39 +129,6 @@ void load()
 
 
 
-
-//Dibujar una red
-void drawGrid() {
-
-	int i;
-	for (i = 0; i < 40; i++) {
-
-		glPushMatrix();
-
-		if (i < 20) {
-
-			glTranslatef(0, 0, i);
-
-		}
-
-		if (i >= 20) {
-
-			glTranslatef(i - 20, 0, 0);
-			glRotatef(-90, 0, 1, 0);
-
-		}
-
-		glBegin(GL_LINES);
-		glColor3f(1, 1, 1);
-		glLineWidth(100);
-		glVertex3f(0, -0.1, 0);
-		glVertex3f(19, -0.1, 0);
-		glEnd();
-		glPopMatrix();
-	}
-
-}
-
 void drawObjects() {
 
 
@@ -173,7 +140,7 @@ void drawObjects() {
 
 	while (n <= 2) {
 
-		drawGrid();
+		/*drawGrid();*/
 
 		// activate shader
 
@@ -277,7 +244,7 @@ void draw(GLFWwindow* window)
 
 
 
-	 drawGrid();
+	 //drawGrid();
 	 drawObjects();
 
 	 // Swap front and back buffers
@@ -320,7 +287,7 @@ void Strafe_Camera(float speed) {
 	glm::vec3 camFront_1(y, p, r);
 
 
-
+	//Calculamos el vector y que esta a 90 grados del movimiento de las z, un vector ortogonal
 	glm::vec3 viewVector = camFront_1 - camPosition_1;
 	glm::vec3 ortogVector;
 
