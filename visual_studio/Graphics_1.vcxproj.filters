@@ -30,6 +30,9 @@
     <ClInclude Include="..\src\tiny_obj_loader.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gl\GLU.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp">
