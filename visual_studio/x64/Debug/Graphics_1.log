@@ -1,10 +1,7 @@
 ﻿  main.cpp
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(113,146): warning C4267: 'argumento': conversión de 'size_t' a 'int'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(115,106): warning C4267: 'argumento': conversión de 'size_t' a 'int'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(123,60): warning C4267: '=': conversión de 'size_t' a 'GLuint'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(277,32): warning C4305: 'argumento': truncamiento de 'double' a 'GLclampf'
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\src\main.cpp(277,32): warning C4305: GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-LINK : warning LNK4098: la biblioteca predeterminada'MSVCRT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
-Shader.obj : warning LNK4099: no se encontr¾ PDB 'vc142.pdb' con 'Shader.obj' o en 'D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\vc142.pdb'; se vincularß el objeto sin tener en cuenta informaci¾n de depuraci¾n
-glfunctions.obj : warning LNK4099: no se encontr¾ PDB 'vc142.pdb' con 'glfunctions.obj' o en 'D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\vc142.pdb'; se vincularß el objeto sin tener en cuenta informaci¾n de depuraci¾n
-  Graphics_1.vcxproj -> D:\OneDrive\Estudios\uni\Curso_2\graficos\practica5\visual_studio\..\Graphics_1.exe
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica6\src\main.cpp(109,146): warning C4267: 'argumento': conversión de 'size_t' a 'int'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica6\src\main.cpp(111,106): warning C4267: 'argumento': conversión de 'size_t' a 'int'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica6\src\main.cpp(119,60): warning C4267: '=': conversión de 'size_t' a 'GLuint'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica6\src\main.cpp(229,32): warning C4305: 'argumento': truncamiento de 'double' a 'GLclampf'
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica6\src\main.cpp(229,32): warning C4305: GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  Graphics_1.vcxproj -> D:\OneDrive\Estudios\uni\Curso_2\graficos\practica6\visual_studio\..\Graphics_1.exe

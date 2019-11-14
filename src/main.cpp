@@ -68,17 +68,13 @@ float inicio_x, inicio_y, final_x, final_y;
 // ------------------------------------------------------------------------------------------
 void load()
 {	
-	while(n <= 2){
+	
 
 		string objeto;
 
-		if (n == 2) {
-			
-			objeto = "bunny.obj";
-		}
-		else {
-			objeto = "teapot_small.obj";
-		}
+
+			objeto = "sphere.obj";
+		
 
 		std::string inputfile = basepath + objeto;				//Nombre del objeto que juntaremos con la path para pasarselo al compilador
 		std::vector< tinyobj::shape_t >shapes;								//Clasificamos el archivo obj y colocamos en el vector sus shapes
@@ -122,8 +118,8 @@ void load()
 		/////////////////////////////////////////g_NumTriangles = sizeof(indices) / (sizeof(GLuint) * 3);
 		obj[n].g_NumTriangles = shapes[0].mesh.indices.size() / 3;
 
-		n++;
-	}
+		
+	
 
 }
 
@@ -138,7 +134,7 @@ void drawObjects() {
 	int n = 0;
 	int escala = 1;
 
-	while (n <= 2) {
+	
 
 		/*drawGrid();*/
 
@@ -213,16 +209,6 @@ void drawObjects() {
 
 
 
-		a += 2;
-		b += 2;
-		c += 2;
-		n++;
-
-		if (n == 2) {
-			a = 0;
-			b = 1;
-		}
-	}
 }
 
 
