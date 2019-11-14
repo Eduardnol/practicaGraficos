@@ -19,7 +19,7 @@
 #include <string.h>
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
-
+#include "imageloader.h"
 #define SPEED 0.03f
 
 std::string basepath = "assets/";									//path donde estara el objeto que vamos a abrir partiendo de la base del proyecto
@@ -61,6 +61,7 @@ int n = 0;
 float y = 0, p = 0, r = -1 , y_camara = 1;
 float inicio_x, inicio_y, final_x, final_y;
 
+GLuint texture_id;
 
 
 // ------------------------------------------------------------------------------------------
@@ -126,7 +127,28 @@ void load()
 		obj[n].g_NumTriangles = shapes[0].mesh.indices.size() / 3;
 
 		
+		Image* image = loadBMP("assets/earthmap1k.bmp");
+
+		glGenTextures(1, &texture_id);
+		glBindTexture(GL_TEXTURE_2D, texture_id);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+		glTexImage2D(GL_TEXTURE_2D,
+			0,
+			GL_RGB,
+			image->width,
+			image->height,
+			0,
+			GL_RGB,
+			GL_UNSIGNED_BYTE,
+			image->pixels);
+
 	
+
+
+		
+
 
 }
 
@@ -208,6 +230,15 @@ void drawObjects() {
 
 
 
+		GLuint u_texture = glGetUniformLocation(obj[n].g_simpleShader, "u_texture");
+
+		glUniform1i(u_texture, 0);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture_id);
+
+
+
 
 		gl_bindVAO(obj[n].g_Vao);
 
@@ -228,12 +259,17 @@ void draw(GLFWwindow* window)
 	
 
 		//clear the screen
-	 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	 glClearColor(0.1, 0.2, 0.2, 1);
+	 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	 glEnable(GL_DEPTH_TEST);
+
+	 glEnable(GL_CULL_FACE);
+	 glCullFace(GL_BACK);
 	 glLoadIdentity();
 	 //glTranslatef(-13, 0, -45);
 	 //glRotatef(40, 1, 1, 0);
-	 glClearColor(0.1, 0.2, 0.2, 1);													//cambiamos el color de fondo de nuestra ventana
+													//cambiamos el color de fondo de nuestra ventana
 
 
 
