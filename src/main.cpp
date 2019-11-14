@@ -20,7 +20,7 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 #include "imageloader.h"
-#define SPEED 0.03f
+#define SPEED 0.01f
 
 std::string basepath = "assets/";									//path donde estara el objeto que vamos a abrir partiendo de la base del proyecto
 												//Nos devolvera error si lo hay en el fichero
@@ -460,8 +460,28 @@ int main(void)
 	load();
 
     // Loop until the user closes the window
+
+	float time = glfwGetTime();
+	float last = time;
+	float current = time;
+	time = 0;
+
+
+
+
+
     while (!glfwWindowShouldClose(window))
     {
+
+
+		//Hay que multiplicar las unidades que nos movemos por las unidades de la diferencia de nuestro elapsed time
+
+		current = glfwGetTime();
+		elapsed_time = current - last;
+		last = current;
+		time += elapsed_time;
+
+		update(elapsed_time)
 		
 		draw(window);
 		glfwSetKeyCallback(window, key_callback);
