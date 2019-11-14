@@ -2,10 +2,10 @@
 
 out vec4 fragColor;
 
-in vec3 v_color;
+in vec2 v_uv;
 
 void main(void)
 {
 	// We're just going to paint the interpolated colour from the vertex shader
-	fragColor =  vec4(1.0, 0.0, 0.0 ,1.0);
+	fragColor =  vec4(v_uv, 0.5 ,1.0);
 }

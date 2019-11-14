@@ -107,6 +107,13 @@ void load()
 
 
 		gl_createAndBindAttribute(&(shapes[0].mesh.positions[0]), shapes[0].mesh.positions.size() * sizeof(float), obj[n].g_simpleShader, "a_vertex", 3);
+		
+		
+		GLfloat* uvs = &(shapes[0].mesh.texcoords[0]);
+		GLuint uvs_size = shapes[0].mesh.texcoords.size() * sizeof(GLfloat);
+
+		gl_createAndBindAttribute(uvs, uvs_size, obj[n].g_simpleShader, "a_uv", 2);
+
 
 		gl_createIndexBuffer(&(shapes[0].mesh.indices[0]), shapes[0].mesh.indices.size() * sizeof(unsigned int));
 
@@ -202,7 +209,6 @@ void drawObjects() {
 
 
 
-
 		gl_bindVAO(obj[n].g_Vao);
 
 		glDrawElements(GL_TRIANGLES, 60 * obj[n].g_NumTriangles, GL_UNSIGNED_INT, 0);
@@ -223,6 +229,7 @@ void draw(GLFWwindow* window)
 
 		//clear the screen
 	 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	 glLoadIdentity();
 	 //glTranslatef(-13, 0, -45);
 	 //glRotatef(40, 1, 1, 0);
