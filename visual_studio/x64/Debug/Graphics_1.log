@@ -1,8 +1,11 @@
 ﻿  main.cpp
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica6\src\main.cpp(110,146): warning C4267: 'argumento': conversión de 'size_t' a 'int'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica6\src\main.cpp(114,70): warning C4267: 'inicializando': conversión de 'size_t' a 'GLuint'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica6\src\main.cpp(119,106): warning C4267: 'argumento': conversión de 'size_t' a 'int'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica6\src\main.cpp(127,60): warning C4267: '=': conversión de 'size_t' a 'GLuint'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica6\src\main.cpp(263,32): warning C4305: 'argumento': truncamiento de 'double' a 'GLclampf'
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica6\src\main.cpp(263,32): warning C4305: GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-  Graphics_1.vcxproj -> D:\OneDrive\Estudios\uni\Curso_2\graficos\practica6\visual_studio\..\Graphics_1.exe
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(112,146): warning C4267: 'argumento': conversión de 'size_t' a 'int'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(116,70): warning C4267: 'inicializando': conversión de 'size_t' a 'GLuint'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(119,106): warning C4267: 'argumento': conversión de 'size_t' a 'int'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(128,72): warning C4267: 'inicializando': conversión de 'size_t' a 'GLuint'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(141,60): warning C4267: '=': conversión de 'size_t' a 'GLuint'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(322,32): warning C4305: 'argumento': truncamiento de 'double' a 'GLclampf'
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(518,13): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(534,24): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(534,24): warning C4244: GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  Graphics_1.vcxproj -> D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\visual_studio\..\Graphics_1.exe

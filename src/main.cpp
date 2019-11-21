@@ -20,7 +20,7 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 #include "imageloader.h"
-#define SPEED 0.01f
+#define SPEED 0.03f
 
 std::string basepath = "assets/";									//path donde estara el objeto que vamos a abrir partiendo de la base del proyecto
 												//Nos devolvera error si lo hay en el fichero
@@ -55,13 +55,15 @@ typedef struct {
 
 Obj obj[2];														//Declaracion de la variable global tetera, la podemos convertir en un vector si hay muchas teteras
 
-										//Definimos las coordenadas del movimiento con el raton
+float elapsed_time = 0;										//Definimos las coordenadas del movimiento con el raton
 float x = 0, z = 1;													//Definimos las coordenadas centro de la tetera
 int n = 0;
 float y = 0, p = 0, r = -1 , y_camara = 1;
 float inicio_x, inicio_y, final_x, final_y;
 
 GLuint texture_id;
+
+glm ::vec3 g_light_dir(100.0f, 100.0f, 100.0f);
 
 
 // ------------------------------------------------------------------------------------------
@@ -114,9 +116,21 @@ void load()
 		GLuint uvs_size = shapes[0].mesh.texcoords.size() * sizeof(GLfloat);
 
 		gl_createAndBindAttribute(uvs, uvs_size, obj[n].g_simpleShader, "a_uv", 2);
-
-
 		gl_createIndexBuffer(&(shapes[0].mesh.indices[0]), shapes[0].mesh.indices.size() * sizeof(unsigned int));
+
+
+
+
+
+
+
+		GLfloat* normals = &(shapes[0].mesh.normals[0]);
+		GLuint normals_size = shapes[0].mesh.normals.size() * sizeof(GLfloat);
+
+		gl_createAndBindAttribute(normals, normals_size, obj[n].g_simpleShader, "a_normal", 3);
+		//gl_createIndexBuffer(&(shapes[0].mesh.indices[0]), shapes[0].mesh.indices.size() * sizeof(unsigned int));
+
+
 
 		//unbind everything
 		gl_unbindVAO();
@@ -127,6 +141,14 @@ void load()
 		obj[n].g_NumTriangles = shapes[0].mesh.indices.size() / 3;
 
 		
+
+
+
+		/*--------------------------------------------------------
+			PARA CARGAR LA TEXTURA DE LA TIERRA EN MEMORIA
+		--------------------------------------------------------*/
+
+
 		Image* image = loadBMP("assets/earthmap1k.bmp");
 
 		glGenTextures(1, &texture_id);
@@ -163,9 +185,7 @@ void drawObjects() {
 	int n = 0;
 	int escala = 1;
 
-	
 
-		/*drawGrid();*/
 
 		// activate shader
 
@@ -179,22 +199,16 @@ void drawObjects() {
 
 
 		//bind the geometry
-		/////////////////////////////////////////////////gl_bindVAO(g_Vao);
 		glBindVertexArray(obj[n].g_Vao);
 
+
 		// Draw to screen
-
-
-
 		/*--------------------------------------------------------
-			PARA la perspectiva de lejania
+			PARA LA POSICION DLE OBJETO EN EL ESPACIO
 		--------------------------------------------------------*/
 		mat4 model = translate(mat4(1.0f), vec3(a, b, c));
 		GLuint model_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_model");
 		glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
-
-		//Para el movimiento de FPS vamos a usar las teclas WASD
-
 
 
 		/*--------------------------------------------------------
@@ -213,8 +227,13 @@ void drawObjects() {
 		);
 
 		GLuint view_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_view");
-
 		glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view_matrix));
+
+
+		/*--------------------------------------------------------
+			PARA LA PERSPECTIVA DE LEJANIA
+		--------------------------------------------------------*/
+
 
 
 		//Ahora mismo la camara y la tetera estan en 0,0,0, debemos mover la tetera en profundidad para poder verla al completo, el FOV no se debe tocar para evitar deofrmaciones
@@ -230,6 +249,11 @@ void drawObjects() {
 
 
 
+		/*--------------------------------------------------------
+			PARA LA TEXTURA DEL PLANETA
+		--------------------------------------------------------*/
+
+
 		GLuint u_texture = glGetUniformLocation(obj[n].g_simpleShader, "u_texture");
 
 		glUniform1i(u_texture, 0);
@@ -238,6 +262,41 @@ void drawObjects() {
 		glBindTexture(GL_TEXTURE_2D, texture_id);
 
 
+
+		/*--------------------------------------------------------
+			PARA LA NORMALIZACION
+		--------------------------------------------------------*/
+		GLuint u_normalize = glGetUniformLocation(obj[n].g_simpleShader, "u_normal");
+
+		glUniform1i(u_normalize, 0);
+
+
+
+/****************
+		/*--------------------------------------------------------
+			PARA LA LUZ QUE TOCA AL PLANETA
+		--------------------------------------------------------*
+
+		GLuint u_light_dir = glGetUniformLocation(obj[n].g_simpleShader, "u_light_dir");
+		float g_light_distance = 3.0f, g_light_angle = 45.0f;
+		//float g_light_dir.x = g_light_distance * sinf(g_light_angle);
+		//float light_z = g_light_distance * cosf(g_light_angle);
+		glUniform3f(u_light_dir, g_light_dir.x, g_light_dir.y, g_light_dir.z);
+
+
+
+		/*--------------------------------------------------------
+			PARA EL COLOR DE LA LUZ QUE TOCA AL PLANETA
+		--------------------------------------------------------*
+
+		GLuint u_light_color = glGetUniformLocation(obj[n].g_simpleShader, "u_light_color");
+
+
+		
+******************************/
+		/*--------------------------------------------------------
+			PARA ACABAR Y DIBUJAR
+		--------------------------------------------------------*/
 
 
 		gl_bindVAO(obj[n].g_Vao);
@@ -324,7 +383,7 @@ void Strafe_Camera(float speed) {
 	ortogVector.x = -viewVector.z;
 	ortogVector.z = viewVector.x;
 
-
+	
 
 	x = x + ortogVector.x * speed;
 	z = z + ortogVector.z * speed;
@@ -332,11 +391,6 @@ void Strafe_Camera(float speed) {
 	r = r + ortogVector.z * speed;
 
 }
-
-
-
-
-
 
 
 
@@ -459,30 +513,30 @@ int main(void)
 	//load all the resources
 	load();
 
-    // Loop until the user closes the window
+ 
 
 	float time = glfwGetTime();
 	float last = time;
 	float current = time;
 	time = 0;
 
+	int frame_count = 0;
 
 
 
-
-    while (!glfwWindowShouldClose(window))
-    {
+	while (!glfwWindowShouldClose(window))
+	{
 
 
 		//Hay que multiplicar las unidades que nos movemos por las unidades de la diferencia de nuestro elapsed time
 
+	
 		current = glfwGetTime();
 		elapsed_time = current - last;
 		last = current;
 		time += elapsed_time;
 
-		update(elapsed_time)
-		
+
 		draw(window);
 		glfwSetKeyCallback(window, key_callback);
 		movimientoRaton(window);
