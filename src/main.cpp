@@ -63,7 +63,8 @@ float inicio_x, inicio_y, final_x, final_y;
 
 GLuint texture_id;
 
-glm ::vec3 g_light_dir(100.0f, 100.0f, 100.0f);
+vec3 g_light_dir(100.0f, 100.0f, 100.0f);
+
 
 
 // ------------------------------------------------------------------------------------------
@@ -271,29 +272,27 @@ void drawObjects() {
 		glUniform1i(u_normalize, 0);
 
 
-
-/****************
 		/*--------------------------------------------------------
 			PARA LA LUZ QUE TOCA AL PLANETA
-		--------------------------------------------------------*
+		--------------------------------------------------------*/
 
 		GLuint u_light_dir = glGetUniformLocation(obj[n].g_simpleShader, "u_light_dir");
-		float g_light_distance = 3.0f, g_light_angle = 45.0f;
-		//float g_light_dir.x = g_light_distance * sinf(g_light_angle);
-		//float light_z = g_light_distance * cosf(g_light_angle);
+//		float g_light_distance = 3.0f, g_light_angle = 45.0f;
+
+
 		glUniform3f(u_light_dir, g_light_dir.x, g_light_dir.y, g_light_dir.z);
+
+
 
 
 
 		/*--------------------------------------------------------
 			PARA EL COLOR DE LA LUZ QUE TOCA AL PLANETA
-		--------------------------------------------------------*
+		--------------------------------------------------------*/
 
 		GLuint u_light_color = glGetUniformLocation(obj[n].g_simpleShader, "u_light_color");
 
 
-		
-******************************/
 		/*--------------------------------------------------------
 			PARA ACABAR Y DIBUJAR
 		--------------------------------------------------------*/
