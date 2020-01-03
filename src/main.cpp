@@ -291,8 +291,8 @@ void drawObjects() {
 		GLuint u_shiness = glGetUniformLocation(obj[n].g_simpleShader, "u_shiness");
 		GLuint u_ambient = glGetUniformLocation(obj[n].g_simpleShader, "u_ambient");
 		
-		glUniform1f(u_shiness, 30.0);
-		glUniform1f(u_ambient, 0.2);
+		glUniform1f(u_shiness, 100.0);
+		glUniform1f(u_ambient, 0.1);
 
 
 
