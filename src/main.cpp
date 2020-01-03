@@ -121,10 +121,6 @@ void load()
 
 
 
-
-
-
-
 		GLfloat* normals = &(shapes[0].mesh.normals[0]);
 		GLuint normals_size = shapes[0].mesh.normals.size() * sizeof(GLfloat);
 
@@ -278,13 +274,7 @@ void drawObjects() {
 
 		GLuint u_light_dir = glGetUniformLocation(obj[n].g_simpleShader, "u_light_dir");
 //		float g_light_distance = 3.0f, g_light_angle = 45.0f;
-
-
 		glUniform3f(u_light_dir, g_light_dir.x, g_light_dir.y, g_light_dir.z);
-
-
-
-
 
 		/*--------------------------------------------------------
 			PARA EL COLOR DE LA LUZ QUE TOCA AL PLANETA
@@ -302,7 +292,7 @@ void drawObjects() {
 		GLuint u_ambient = glGetUniformLocation(obj[n].g_simpleShader, "u_ambient");
 		
 		glUniform1f(u_shiness, 30.0);
-		glUniform1f(u_ambient, 0.1);
+		glUniform1f(u_ambient, 0.2);
 
 
 
