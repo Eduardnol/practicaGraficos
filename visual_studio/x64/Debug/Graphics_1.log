@@ -1,12 +1,12 @@
 ﻿  main.cpp
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(113,146): warning C4267: 'argumento': conversión de 'size_t' a 'int'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(117,70): warning C4267: 'inicializando': conversión de 'size_t' a 'GLuint'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(120,106): warning C4267: 'argumento': conversión de 'size_t' a 'int'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(125,72): warning C4267: 'inicializando': conversión de 'size_t' a 'GLuint'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(138,60): warning C4267: '=': conversión de 'size_t' a 'GLuint'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(295,29): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(325,32): warning C4305: 'argumento': truncamiento de 'double' a 'GLclampf'
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(521,13): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
-D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(537,24): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(114,146): warning C4267: 'argumento': conversión de 'size_t' a 'int'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(118,70): warning C4267: 'inicializando': conversión de 'size_t' a 'GLuint'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(121,106): warning C4267: 'argumento': conversión de 'size_t' a 'int'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(126,72): warning C4267: 'inicializando': conversión de 'size_t' a 'GLuint'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(139,60): warning C4267: '=': conversión de 'size_t' a 'GLuint'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(320,29): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(350,32): warning C4305: 'argumento': truncamiento de 'double' a 'GLclampf'
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(546,13): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\src\main.cpp(562,24): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
   GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
   Graphics_1.vcxproj -> D:\OneDrive\Estudios\uni\Curso_2\graficos\practica7\visual_studio\..\Graphics_1.exe

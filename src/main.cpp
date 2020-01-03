@@ -62,6 +62,7 @@ float y = 0, p = 0, r = -1 , y_camara = 1;
 float inicio_x, inicio_y, final_x, final_y;
 
 GLuint texture_id;
+GLuint texture_id1;
 
 vec3 g_light_dir(100.0f, 100.0f, 100.0f);
 
@@ -163,6 +164,25 @@ void load()
 			GL_UNSIGNED_BYTE,
 			image->pixels);
 
+
+		Image* image2 = loadBMP("assets/earthlights1k.bmp");
+
+		glGenTextures(1, &texture_id1);
+		glBindTexture(GL_TEXTURE_2D, texture_id1);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+		glTexImage2D(GL_TEXTURE_2D,
+			0,
+			GL_RGB,
+			image2->width,
+			image2->height,
+			0,
+			GL_RGB,
+			GL_UNSIGNED_BYTE,
+			image2->pixels);
+
+
 	
 
 
@@ -258,6 +278,11 @@ void drawObjects() {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture_id);
 
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture_id1);
+
+		GLuint u_texture1 = glGetUniformLocation(obj[n].g_simpleShader, "u_texture1");
+		glUniform1i(u_texture1, 1);
 
 
 		/*--------------------------------------------------------
