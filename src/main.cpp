@@ -291,6 +291,20 @@ void drawObjects() {
 		--------------------------------------------------------*/
 
 		GLuint u_light_color = glGetUniformLocation(obj[n].g_simpleShader, "u_light_color");
+		glUniform3f(u_light_color, 1.0, 1.0, 1.0);
+
+
+		/*--------------------------------------------------------
+			PARA LA LUZ DIFUSA
+		--------------------------------------------------------*/
+
+		GLuint u_shiness = glGetUniformLocation(obj[n].g_simpleShader, "u_shiness");
+		GLuint u_ambient = glGetUniformLocation(obj[n].g_simpleShader, "u_ambient");
+		
+		glUniform1f(u_shiness, 30.0);
+		glUniform1f(u_ambient, 0.1);
+
+
 
 
 		/*--------------------------------------------------------
