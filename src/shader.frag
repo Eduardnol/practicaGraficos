@@ -14,6 +14,8 @@ uniform float u_ambient;
 uniform vec3 u_color;
 uniform sampler2D u_texture;
 uniform sampler2D u_texture1;
+uniform sampler2D u_texture3;
+//uniform sampler2D u_texture3;
 uniform vec3 u_light_dir;
 uniform vec3 g_light_dir;
 
@@ -57,27 +59,28 @@ void main(void){
 
 		vec3 texture_color = texture(u_texture, v_uv).xyz;
 		vec3 texture_night = texture(u_texture1, v_uv).xyz;
+		vec3 texture_normal = texture(u_texture3, v_uv).xyz;
+//		vec3 texture_specular = texture(u_texture3, v_uv).xyz;
 
 	/*--------------------------------------------------------
 			AMBIENT
 	--------------------------------------------------------*/
 	vec3 ambient_color = texture_color * u_ambient;
-	vec3 night_color = texture_night * u_ambient * 20;
+	vec3 night_color = texture_night;
 
 
 	/*--------------------------------------------------------
 			DIFUSE
 	--------------------------------------------------------*/
 	vec3 N = normalize(v_normal);
-	//vec3 N_orig = N;
+	vec3 N_orig = N;
 
-	//N = perturbNormal(N, v_world_vertex_pos, v_uv, texture_color);
-	//N = mix(N_orig, N, 1.0);
+	N = perturbNormal(N, v_world_vertex_pos, v_uv, texture_normal);
+	N = mix(N_orig, N, 1.0);
 
 	vec3 L = normalize(u_light_dir);
 	float NdotL = max(dot(N, L), 0.0);
 	vec3 diffuse_color = texture_color * NdotL;
-	vec3 diffuse_night = texture_night * NdotL;
 
 
 	/*--------------------------------------------------------
@@ -97,7 +100,7 @@ void main(void){
 
 	if(NdotL < 0.1){
 	
-		result = (night_color + diffuse_night + specular) * night_color;
+		result = (night_color);
 	
 	}
 	else{
@@ -106,9 +109,7 @@ void main(void){
 	
 	}
 
-	//vec3 result = ambient_color * texture_color;
-	//vec3 result = diffuse_color * texture_color;	
-	//vec3 result = specular * texture_color;
+
 
 	fragColor = vec4(result, 1.0);
 

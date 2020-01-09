@@ -63,6 +63,8 @@ float inicio_x, inicio_y, final_x, final_y;
 
 GLuint texture_id;
 GLuint texture_id1;
+GLuint texture_id3;
+GLuint texture_id4;
 
 vec3 g_light_dir(100.0f, 100.0f, 100.0f);
 
@@ -183,6 +185,42 @@ void load()
 			image2->pixels);
 
 
+		Image* image3 = loadBMP("assets/earthnormal.bmp");
+
+		glGenTextures(1, &texture_id3);
+		glBindTexture(GL_TEXTURE_2D, texture_id3);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+		glTexImage2D(GL_TEXTURE_2D,
+			0,
+			GL_RGB,
+			image3->width,
+			image3->height,
+			0,
+			GL_RGB,
+			GL_UNSIGNED_BYTE,
+			image3->pixels);
+
+		Image* image4 = loadBMP("assets/earthspec.bmp");
+
+		glGenTextures(1, &texture_id4);
+		glBindTexture(GL_TEXTURE_2D, texture_id4);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+		glTexImage2D(GL_TEXTURE_2D,
+			0,
+			GL_RGB,
+			image4->width,
+			image4->height,
+			0,
+			GL_RGB,
+			GL_UNSIGNED_BYTE,
+			image4->pixels);
+
+
+
 	
 
 
@@ -281,8 +319,23 @@ void drawObjects() {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture_id1);
 
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, texture_id3);
+
+		//glActiveTexture(GL_TEXTURE2);
+		//glBindTexture(GL_TEXTURE_2D, texture_id4);
+
+
+
 		GLuint u_texture1 = glGetUniformLocation(obj[n].g_simpleShader, "u_texture1");
 		glUniform1i(u_texture1, 1);
+
+		GLuint u_texture2 = glGetUniformLocation(obj[n].g_simpleShader, "u_texture3");
+		glUniform1i(u_texture2, 2);
+
+		/*GLuint u_texture3 = glGetUniformLocation(obj[n].g_simpleShader, "u_texture4");
+		glUniform1i(u_texture3, 3);*/
+
 
 
 		/*--------------------------------------------------------
