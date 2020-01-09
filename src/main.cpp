@@ -66,8 +66,8 @@ GLuint texture_id1;
 GLuint texture_id3;
 GLuint texture_id4;
 
-vec3 g_light_dir(-180.0f, 125.0f, 100.0f);
-//vec3 g_light_dir(100.0f, 100.0f, 100.0f);
+
+vec3 g_light_dir(150.0f, 100.0f, 100.0f);
 
 
 

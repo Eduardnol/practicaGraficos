@@ -90,7 +90,7 @@ void main(void){
 		vec3 R = reflect(L, N);
 		vec3 E = normalize(u_cam_pos - v_world_vertex_pos);
 		float RdotE = pow( max(dot(R, E), 0.0), u_shiness);
-		vec3 specular = u_light_color * RdotE * texture_specular * 100;
+		vec3 specular = u_light_color * RdotE * texture_specular;
 
 
 	/*--------------------------------------------------------
