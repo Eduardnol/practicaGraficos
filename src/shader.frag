@@ -15,7 +15,7 @@ uniform vec3 u_color;
 uniform sampler2D u_texture;
 uniform sampler2D u_texture1;
 uniform sampler2D u_texture3;
-//uniform sampler2D u_texture3;
+uniform sampler2D u_texture4;
 uniform vec3 u_light_dir;
 uniform vec3 g_light_dir;
 
@@ -27,6 +27,7 @@ mat3 cotangent_frame(vec3 N, vec3 p, vec2 uv)
 	vec3 dp2 = dFdy( p );
 	vec2 duv1 = dFdx( uv );
 	vec2 duv2 = dFdy( uv );
+
 	// solve the linear system
 	vec3 dp2perp = cross( dp2, N );
 	vec3 dp1perp = cross( N, dp1 );
@@ -60,7 +61,7 @@ void main(void){
 		vec3 texture_color = texture(u_texture, v_uv).xyz;
 		vec3 texture_night = texture(u_texture1, v_uv).xyz;
 		vec3 texture_normal = texture(u_texture3, v_uv).xyz;
-//		vec3 texture_specular = texture(u_texture3, v_uv).xyz;
+		float texture_specular = texture(u_texture4, v_uv).x;
 
 	/*--------------------------------------------------------
 			AMBIENT
@@ -89,7 +90,7 @@ void main(void){
 		vec3 R = reflect(L, N);
 		vec3 E = normalize(u_cam_pos - v_world_vertex_pos);
 		float RdotE = pow( max(dot(R, E), 0.0), u_shiness);
-		vec3 specular = u_light_color * RdotE * 2;
+		vec3 specular = u_light_color * RdotE * texture_specular * 100;
 
 
 	/*--------------------------------------------------------
@@ -104,8 +105,9 @@ void main(void){
 	
 	}
 	else{
+
 	
-		result = (ambient_color + diffuse_color + specular) * texture_color;
+		result = ( specular + ambient_color + diffuse_color) * texture_color;
 	
 	}
 

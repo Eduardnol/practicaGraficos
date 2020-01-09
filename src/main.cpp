@@ -53,9 +53,9 @@ typedef struct {
 
 }Obj;
 
-Obj obj[2];														//Declaracion de la variable global tetera, la podemos convertir en un vector si hay muchas teteras
+Obj obj[2];															//Declaracion de la variable global tetera, la podemos convertir en un vector si hay muchas teteras
 
-float elapsed_time = 0;										//Definimos las coordenadas del movimiento con el raton
+float elapsed_time = 0;												//Definimos las coordenadas del movimiento con el raton
 float x = 0, z = 1;													//Definimos las coordenadas centro de la tetera
 int n = 0;
 float y = 0, p = 0, r = -1 , y_camara = 1;
@@ -66,7 +66,8 @@ GLuint texture_id1;
 GLuint texture_id3;
 GLuint texture_id4;
 
-vec3 g_light_dir(100.0f, 100.0f, 100.0f);
+vec3 g_light_dir(-180.0f, 125.0f, 100.0f);
+//vec3 g_light_dir(100.0f, 100.0f, 100.0f);
 
 
 
@@ -309,9 +310,7 @@ void drawObjects() {
 		--------------------------------------------------------*/
 
 
-		GLuint u_texture = glGetUniformLocation(obj[n].g_simpleShader, "u_texture");
-
-		glUniform1i(u_texture, 0);
+		
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture_id);
@@ -322,10 +321,12 @@ void drawObjects() {
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, texture_id3);
 
-		//glActiveTexture(GL_TEXTURE2);
-		//glBindTexture(GL_TEXTURE_2D, texture_id4);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, texture_id4);
 
 
+		GLuint u_texture = glGetUniformLocation(obj[n].g_simpleShader, "u_texture");
+		glUniform1i(u_texture, 0);
 
 		GLuint u_texture1 = glGetUniformLocation(obj[n].g_simpleShader, "u_texture1");
 		glUniform1i(u_texture1, 1);
@@ -333,8 +334,8 @@ void drawObjects() {
 		GLuint u_texture2 = glGetUniformLocation(obj[n].g_simpleShader, "u_texture3");
 		glUniform1i(u_texture2, 2);
 
-		/*GLuint u_texture3 = glGetUniformLocation(obj[n].g_simpleShader, "u_texture4");
-		glUniform1i(u_texture3, 3);*/
+		GLuint u_texture3 = glGetUniformLocation(obj[n].g_simpleShader, "u_texture4");
+		glUniform1i(u_texture3, 3);
 
 
 
