@@ -58,5 +58,8 @@
     <None Include="..\src\shader.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\src\shader2.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

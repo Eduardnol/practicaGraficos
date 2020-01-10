@@ -65,6 +65,12 @@ GLuint texture_id;
 GLuint texture_id1;
 GLuint texture_id3;
 GLuint texture_id4;
+GLuint texture_id5;
+
+
+GLuint g_simpleShaderMilky;
+GLuint g_VaoMilky;
+GLuint g_NumTrianglesMilky;
 
 
 vec3 g_light_dir(150.0f, 100.0f, 100.0f);
@@ -85,6 +91,7 @@ void load()
 		
 
 		std::string inputfile = basepath + objeto;				//Nombre del objeto que juntaremos con la path para pasarselo al compilador
+		std::string inputfile2 = basepath + objeto;
 		std::vector< tinyobj::shape_t >shapes;								//Clasificamos el archivo obj y colocamos en el vector sus shapes
 		std::vector< tinyobj::material_t >materials;						//En este otro vector colocamos los materials
 
@@ -92,6 +99,7 @@ void load()
 		//test it loaded correctly
 
 		bool ret = tinyobj::LoadObj(shapes, materials, err, inputfile.c_str(), basepath.c_str());
+		bool ret2 = tinyobj::LoadObj(shapes, materials, err, inputfile2.c_str(), basepath.c_str());
 
 		if (!err.empty()) {												//Comprueba si hay errores en la variable que hemos definido en la linea 30
 			std::cerr << err << endl;
@@ -106,6 +114,9 @@ void load()
 
 		//load the shader
 		Shader simpleShader("src/shader.vert", "src/shader.frag");
+		Shader simpleShaderMilky("src/shader.vert", "src/shader2.frag");
+
+		g_simpleShaderMilky = simpleShaderMilky.program;
 
 		obj[n].g_simpleShader = simpleShader.program;
 
@@ -220,6 +231,23 @@ void load()
 			GL_UNSIGNED_BYTE,
 			image4->pixels);
 
+		Image* image5 = loadBMP("assets/milkyway.bmp");
+
+		glGenTextures(1, &texture_id5);
+		glBindTexture(GL_TEXTURE_2D, texture_id5);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+		glTexImage2D(GL_TEXTURE_2D,
+			0,
+			GL_RGB,
+			image5->width,
+			image5->height,
+			0,
+			GL_RGB,
+			GL_UNSIGNED_BYTE,
+			image5->pixels);
+
 
 
 	
@@ -230,6 +258,76 @@ void load()
 
 }
 
+
+void drawUniverse( mat4 projection_matrix, mat4 view_matrix, float x, float y_cam, float z) {
+
+	glDisable(GL_DEPTH_TEST);
+	glCullFace(GL_FRONT);
+	glUseProgram(g_simpleShaderMilky);
+
+
+	// activate shader
+
+
+
+	GLuint view_loc = glGetUniformLocation(g_simpleShaderMilky, "u_view");
+	glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view_matrix));
+
+
+	/*--------------------------------------------------------
+		PARA LA PERSPECTIVA DE LEJANIA
+	--------------------------------------------------------*/
+
+
+	GLuint projection_loc = glGetUniformLocation(g_simpleShaderMilky, "u_projection");
+	glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection_matrix));
+
+
+/*--------------------------------------------------------
+	PARA HACER APARECER LA BOLA
+--------------------------------------------------------*/
+	GLuint colorLoc = glGetUniformLocation(g_simpleShaderMilky, "u_color");
+	glUniform3f(colorLoc, 0.0, 0.0, 1.0);
+
+
+
+
+	// Draw to screen
+	/*--------------------------------------------------------
+		PARA LA POSICION DLE OBJETO EN EL ESPACIO
+	--------------------------------------------------------*/
+	mat4 model_u = translate(mat4(1.0f), vec3(x, y_cam, z));
+	mat4 escalar = scale(model_u, vec3(1.0, 1.0, 1.0));
+	GLuint model_loc = glGetUniformLocation(g_simpleShaderMilky, "u_model");
+	glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(escalar));
+
+
+
+	/*--------------------------------------------------------
+		PARA LA PERSPECTIVA DE LEJANIA
+	--------------------------------------------------------*/
+
+
+
+	//Ahora mismo la camara y la tetera estan en 0,0,0, debemos mover la tetera en profundidad para poder verla al completo, el FOV no se debe tocar para evitar deofrmaciones
+	//create projection matrix and pass to shader
+
+	GLuint u_texture = glGetUniformLocation(g_simpleShaderMilky, "u_texture");
+	glUniform1i(u_texture, 0);
+
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture_id5);
+
+
+
+
+	gl_bindVAO(obj[n].g_Vao);
+	glDrawElements(GL_TRIANGLES, obj[n].g_NumTriangles * 3, GL_UNSIGNED_INT, 0);
+
+	glEnable(GL_DEPTH_TEST);
+
+}
 
 
 void drawObjects() {
@@ -242,13 +340,61 @@ void drawObjects() {
 	int escala = 1;
 
 
+			/*--------------------------------------------------------
+			PARA EL MOVIMIENTO DE LA CAMARA
+		--------------------------------------------------------*/
+
+			glm::vec3 camPosition(x, y_camara, z);
+			glm::vec3 WorldUp(0.f, 1.f, 0.f);
+			glm::vec3 camFront(y, p, r);
+			glm::mat4 view_matrix(1.f);
+
+			view_matrix = glm::lookAt(
+				camPosition,//eye, // the position of your camera, in world space
+				camFront,// where you want to look at, in world space
+				WorldUp//up // probably glm::vec3(0,1,0)
+			);
+
+			GLuint view_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_view");
+			glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view_matrix));
+
+
+			/*--------------------------------------------------------
+				PARA LA PERSPECTIVA DE LEJANIA
+			--------------------------------------------------------*/
+
+
+
+			//Ahora mismo la camara y la tetera estan en 0,0,0, debemos mover la tetera en profundidad para poder verla al completo, el FOV no se debe tocar para evitar deofrmaciones
+			//create projection matrix and pass to shader
+			mat4 projection_matrix = perspective(
+				65.0f, // Field of view
+				1.0f, // Aspect ratio
+				0.1f, // near plane (distance from camera)
+				50.0f // Far plane (distance from camera)
+			);
+			GLuint projection_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_projection");
+			glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection_matrix));
+
+
+
+
+
+		drawUniverse( projection_matrix, view_matrix, x, y_camara, z);
+
+
+		glEnable(GL_DEPTH_TEST);
+
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+	
 
 		// activate shader
-
+		glUseProgram(obj[n].g_simpleShader);
 		/*--------------------------------------------------------
 			PARA HACER APARECER LA TETERA
 		--------------------------------------------------------*/
-		glUseProgram(obj[n].g_simpleShader);
+
 		GLuint colorLoc = glGetUniformLocation(obj[n].g_simpleShader, "u_color");
 		glUniform3f(colorLoc, 1.0, 0.0, 0.0);
 
@@ -266,42 +412,6 @@ void drawObjects() {
 		GLuint model_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_model");
 		glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
 
-
-		/*--------------------------------------------------------
-			PARA EL MOVIMIENTO DE LA CAMARA
-		--------------------------------------------------------*/
-
-		glm::vec3 camPosition(x, y_camara, z);
-		glm::vec3 WorldUp(0.f, 1.f, 0.f);
-		glm::vec3 camFront(y, p, r);
-		glm::mat4 view_matrix(1.f);
-
-		view_matrix = glm::lookAt(
-			camPosition,//eye, // the position of your camera, in world space
-			camFront,// where you want to look at, in world space
-			WorldUp//up // probably glm::vec3(0,1,0)
-		);
-
-		GLuint view_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_view");
-		glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view_matrix));
-
-
-		/*--------------------------------------------------------
-			PARA LA PERSPECTIVA DE LEJANIA
-		--------------------------------------------------------*/
-
-
-
-		//Ahora mismo la camara y la tetera estan en 0,0,0, debemos mover la tetera en profundidad para poder verla al completo, el FOV no se debe tocar para evitar deofrmaciones
-		//create projection matrix and pass to shader
-		mat4 projection_matrix = perspective(
-			65.0f, // Field of view
-			1.0f, // Aspect ratio
-			0.1f, // near plane (distance from camera)
-			50.0f // Far plane (distance from camera)
-		);
-		GLuint projection_loc = glGetUniformLocation(obj[n].g_simpleShader, "u_projection");
-		glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection_matrix));
 
 
 
@@ -388,7 +498,6 @@ void drawObjects() {
 
 
 }
-
 
 
 
